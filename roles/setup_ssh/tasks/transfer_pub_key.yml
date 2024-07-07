@@ -1,0 +1,33 @@
+---
+- name: Find SSH public key
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.ssh/id_rsa.pub"
+  register: ssh_public_key
+
+- name: Display found SSH public keys
+  ansible.builtin.debug:
+    var: ssh_public_key.stat
+
+- name: Include vault variables
+  ansible.builtin.include_vars:
+    file: group_vars/threatq/vault.yml
+  no_log: true
+
+- name: For each host, copy public key to servers
+  ansible.builtin.expect:
+    command: "ssh-copy-id -i {{ ssh_public_key.stat.path }} {{ item }}"
+    responses:
+      "password:": "{{ vault_become_pass }}"
+    timeout: 30
+  loop: "{{ groups['threatq'] }}"
+  register: ssh_copy_id_result
+  no_log: true
+  when: ssh_public_key.stat | length > 0
+
+- name: Display ssh-copy-id results
+  ansible.builtin.debug:
+    msg: "ssh-copy-id for {{ item.item }} completed with return code {{ item.rc }}. stdout: {{ item.stdout_lines | to_nice_json }}"
+  loop: "{{ ssh_copy_id_result.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: ssh_copy_id_result is defined

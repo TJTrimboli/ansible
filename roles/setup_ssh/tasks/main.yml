@@ -1,0 +1,7 @@
+---
+# tasks file for setup_ssh
+- name: Manage local authorized keys
+  ansible.builtin.include_tasks: update_local_keys.yml
+
+- name: Add public key to hosts
+  ansible.builtin.include_tasks: transfer_pub_key.yml

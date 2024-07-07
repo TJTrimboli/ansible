@@ -1,0 +1,8 @@
+---
+- name: Setup SSH on remote hosts from localhost
+  hosts: localhost
+  gather_facts: true
+  vars:
+    vault_become_pass: "{{ ansible_become_password }}"
+  roles:
+    - role: setup_ssh

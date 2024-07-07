@@ -1,0 +1,16 @@
+---
+admin_users:
+  - name: admin
+    comment: "ThreatQ Admin"
+    uid: 1201
+    groups:
+      - admin
+      - wheel
+    state: present
+  - name: travis_t
+    comment: "ThreatQ Admin"
+    uid: 1202
+    groups:
+      - admin
+      - wheel
+    state: present

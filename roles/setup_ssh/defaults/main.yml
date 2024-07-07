@@ -1,0 +1,30 @@
+---
+# defaults file for setup_ssh
+
+# define if extenally set keys need to be erased
+ssh_keys_clean: false
+
+# based on user, define sources of keys
+# see http://docs.ansible.com/ansible/authorized_key_module.html for item types
+authorized_key_list: []
+
+# List of users and their keys
+authorized_key_list_host: []
+
+# List of groups and their keys
+authorized_key_list_group: "{{ groups['threatq'] }}"
+
+# Default value for exclusive
+authorized_key_exclusive: false
+
+# Default value for key_options
+authorized_key_key_options: ''
+
+# Default value for manage_dir
+authorized_key_manage_dir: true
+
+# Default value for path
+# authorized_key_path: omit
+
+# Default value for state
+authorized_key_state: present

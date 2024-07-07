@@ -1,0 +1,15 @@
+---
+- name: For each host, scan for its ssh public key
+  ansible.builtin.command: "ssh-keyscan {{ item }} 'dig +short {{ item }}'"
+  loop: "{{ authorized_key_list_group }}"
+  register: ssh_known_host_results
+  changed_when: ssh_known_host_results != 0
+
+- name: Add/update the public key
+  ansible.builtin.known_hosts:
+    name: "{{ item.item }}"
+    key: "{{ item.stdout }}"
+    path: "{{ item.1.path | default(omit) }}"
+    state: "{{ item.1.state | default(authorized_key_state) }}"
+  with_items:
+    - "{{ ssh_known_host_results.results }}"
